@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSpotter - Find Products in Nearby Malls</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #f0f4f8;
+            --text-color: #333;
+            --light-text-color: #666;
+            --white: #fff;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--secondary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .search-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 0.5rem;
+            color: var(--light-text-color);
+            font-weight: 500;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .mall-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .mall-filter label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .mall-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .mall-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mall-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .mall-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+
+        .mall-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .mall-info {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .rating {
+            color: #fbbf24;
+            margin-top: 0.5rem;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--light-text-color);
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav {
+                margin-top: 1rem;
+            }
+
+            .mall-filter {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="StockSpotter.jpg" alt="StockSpotter Logo">
+            <h1>StockSpotter</h1>
+        </div>
+        <nav>
+            <a href="SS.html">Home</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="search-section">
+            <h2>Find Products in Nearby Malls</h2>
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="productSelect">Select a Product:</label>
+                    <select id="productSelect">
+                        <option value="">Choose a product</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Filter Malls:</label>
+                    <div class="mall-filter">
+                        <label><input type="checkbox" id="smCheckbox" checked> SM</label>
+                        <label><input type="checkbox" id="robinsonsCheckbox" checked> Robinsons</label>
+                        <label><input type="checkbox" id="laNuevaCheckbox" checked> La Nueva</label>
+                        <label><input type="checkbox" id="gaisanoCheckbox" checked> Gaisano</label>
+                    </div>
+                </div>
+            </form>
+        </section>
+        
+        <section class="mall-list" id="mallList"></section>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, image: 'image1.jpg', title: 'Samsung Galaxy S21', category: 'electronics' },
+            { id: 2, image: 'image2.jpg', title: 'Apple MacBook Pro', category: 'computers' },
+            { id: 3, image: 'image3.jpg', title: 'Amazon Echo Dot', category: 'smart-home' },
+            { id: 4, image: 'image4.jpg', title: 'Faber-Castell Art Set', category: 'art-craft' },
+            { id: 5, image: 'image5.jpg', title: 'L\'Oreal Face Cream', category: 'beauty' },
+            { id: 6, image: 'image6.jpg', title: 'iPad Air', category: 'electronics' },
+            { id: 7, image: 'image7.jpg', title: 'Dell XPS Desktop', category: 'computers' },
+            { id: 8, image: 'image8.webp', title: 'Philips Hue Bulb', category: 'smart-home' },
+            { id: 9, image: 'image9.jpg', title: 'Moleskine Sketchbook', category: 'art-craft' },
+            { id: 10, image: 'image10.avif', title: 'Dove Shampoo', category: 'beauty' },
+            { id: 11, image: 'image11.avif', title: 'Sony 4K TV', category: 'electronics' },
+            { id: 12, image: 'image12.jpg', title: 'Lenovo ThinkPad', category: 'computers' },
+            { id: 13, image: 'image13.jpg', title: 'Google Nest Thermostat', category: 'smart-home' },
+            { id: 14, image: 'image14.jpg', title: 'Copic Marker Set', category: 'art-craft' },
+            { id: 15, image: 'image15.jpg', title: 'Neutrogena Sunscreen', category: 'beauty' },
+            { id: 16, image: 'image16.webp', title: 'Canon EOS R5', category: 'electronics' },
+            { id: 17, image: 'image17.jpg', title: 'ASUS ROG Gaming Laptop', category: 'computers' },
+            { id: 18, image: 'image18.webp', title: 'Ring Video Doorbell', category: 'smart-home' },
+            { id: 19, image: 'image19.jpg', title: 'Wacom Drawing Tablet', category: 'art-craft' },
+            { id: 20, image: 'image20.jpg', title: 'Dyson Hair Dryer', category: 'beauty' },
+            { id: 21, image: 'image21.jpg', title: 'KitchenAid Stand Mixer', category: 'kitchen' },
+            { id: 22, image: 'image22.png', title: 'Nike Air Max', category: 'fashion' },
+            { id: 23, image: 'image23.jpg', title: 'Instant Pot', category: 'kitchen' },
+            { id: 24, image: 'image24.webp', title: 'Levi\'s 501 Jeans', category: 'fashion' },
+            { id: 25, image: 'image25.jpg', title: 'Nespresso Coffee Machine', category: 'kitchen' },
+        ];
+
+        const malls = {
+            sm: [
+                { name: "SM City North EDSA", logo: "SM.png", address: "North Avenue corner EDSA, Quezon City", contact: "+63 2 8881 7000" },
+                { name: "SM Megamall", logo: "SM.png", address: "EDSA corner Doña Julia Vargas Avenue, Mandaluyong City", contact: "+63 2 8633 1000" },
+                { name: "SM Mall of Asia", logo: "SM.png", address: "SM Central Business Park, Bay City, Pasay City", contact: "+63 2 8556 0680" }
+            ],
+            robinsons: [
+                { name: "Robinsons Galleria", logo: "Robinson.jpg", address: "EDSA corner Ortigas Avenue, Quezon City", contact: "+63 2 8397 1888" },
+                { name: "Robinsons Place Manila", logo: "Robinson.jpg", address: "M. Adriatico Street, Ermita, Manila", contact: "+63 2 8836 7000" },
+                { name: "Robinsons Magnolia", logo: "Robinson.jpg", address: "Aurora Boulevard corner Doña Hemady Street, Quezon City", contact: "+63 2 8654 2000" }
+            ],
+            "la-nueva": [
+                { name: "La Nueva Divisoria Mall", logo: "La Nueva.jpg", address: "825 Recto Avenue, Binondo, Manila", contact: "+63 2 8242 0806" },
+                { name: "La Nueva Sta. Lucia East Grand Mall", logo: "La Nueva.jpg", address: "Marcos Highway corner Felix Avenue, Cainta, Rizal", contact: "+63 2 8681 3953" },
+                { name: "La Nueva Tutuban Center", logo: "La Nueva.jpg", address: "C.M. Recto Avenue, Tondo, Manila", contact: "+63 2 8251 0078" }
+            ],
+            gaisano: [
+                { name: "Gaisano Grand Mall Mactan", logo: "Gaisano.webp", address: "Basak, Lapu-Lapu City, Cebu", contact: "+63 32 495 4000" },
+                { name: "Gaisano Capital South", logo: "Gaisano.webp", address: "N. Bacalso Avenue, Cebu City", contact: "+63 32 261 8000" },
+                { name: "Gaisano Grand Mandaue", logo: "Gaisano.webp", address: "A.C. Cortes Avenue, Mandaue City, Cebu", contact: "+63 32 346 3000" }
+            ]
+        };
+
+        const productSelect = document.getElementById('productSelect');
+        const mallList = document.getElementById('mallList');
+        const mallCheckboxes = document.querySelectorAll('.mall-filter input[type="checkbox"]');
+
+        // Populate product select
+        products.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.id;
+            option.textContent = product.title;
+            productSelect.appendChild(option);
+        });
+
+        function getRandomRating() {
+            return (Math.random() * (5 - 3) + 3).toFixed(1);
+        }
+
+        function updateMallList() {
+            const selectedProductId = productSelect.value;
+            const selectedProduct = products.find(p => p.id === parseInt(selectedProductId));
+            const selectedMalls = Array.from(mallCheckboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.id.replace('Checkbox', '').toLowerCase());
+
+            mallList.innerHTML = '';
+
+            if (!selectedProduct) {
+                mallList.innerHTML = '<p class="no-results">Please select a product to see available malls.</p>';
+                return;
+            }
+
+            let mallsFound = false;
+
+            selectedMalls.forEach(mallKey => {
+                malls[mallKey].forEach(mall => {
+                    const mallCard = document.createElement('div');
+                    mallCard.className = 'mall-card';
+                    const rating = getRandomRating();
+                    mallCard.innerHTML = `
+                        <img src="${mall.logo}" alt="${mall.name} Logo" class="mall-logo">
+                        <h3 class="mallmall-name">${mall.name}</h3>
+                        <p class="mall-info">${mall.address}</p>
+                        <p class="mall-info">${mall.contact}</p>
+                        <div class="rating">
+                            ${'★'.repeat(Math.floor(rating))}${'☆'.repeat(5 - Math.floor(rating))}
+                            <span>(${rating})</span>
+                        </div>
+                    `;
+                    mallList.appendChild(mallCard);
+                    mallsFound = true;
+                });
+            });
+
+            if (!mallsFound) {
+                mallList.innerHTML = '<p class="no-results">No malls found with the selected product.</p>';
+            }
+        }
+
+        productSelect.addEventListener('change', updateMallList);
+        mallCheckboxes.forEach(checkbox => checkbox.addEventListener('change', updateMallList));
+
+        // Initial update
+        updateMallList();
+    </script>
+</body>
+</html>
