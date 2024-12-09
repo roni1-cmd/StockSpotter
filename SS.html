@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSpotter - Compare Prices Across Malls</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --background-color: #f0f8ff;
+            --text-color: #333;
+            --light-text-color: #666;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--white) 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus-within {
+            background: var(--white);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            padding: 0.25rem;
+            color: var(--white);
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-bar:focus-within input {
+            color: var(--text-color);
+        }
+
+        .search-bar:focus-within input::placeholder {
+            color: var(--light-text-color);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 5rem;
+            height: calc(100vh - 7rem);
+            overflow-y: auto;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            background: var(--background-color);
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+
+        .sidebar-tab {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-tab.active {
+            background: var(--white);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .category {
+            margin-bottom: 1.5rem;
+        }
+
+        .category h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            color: var(--light-text-color);
+            transition: all 0.3s ease;
+            border-radius: 6px;
+        }
+
+        .category-item:hover, .category-item.active {
+            color: var(--primary-color);
+            background: var(--background-color);
+            font-weight: 500;
+        }
+
+        /* Mall Checkboxes */
+        .mall-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mall-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .mall-checkbox:hover {
+            background: var(--background-color);
+        }
+
+        .mall-checkbox input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .product-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .compare-btn {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .compare-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .details-btn {
+            background: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .details-btn:hover {
+            background: #e0f0ff;
+        }
+
+        /* Compare Page */
+        .compare-page {
+            display: none;
+        }
+
+        .compare-page.active {
+            display: block;
+        }
+
+        .compare-form {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .compare-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .compare-malls, .compare-products {
+            margin-bottom: 1.5rem;
+        }
+
+        .compare-malls label, .compare-products label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .compare-malls select, .compare-products select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .compare-malls select:focus, .compare-products select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        .compare-button {
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .compare-button:hover {
+            background: var(--secondary-color);
+        }
+
+        .comparison-result {
+            background: var(--background-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .comparison-result h4 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .comparison-mall {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .comparison-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .comparison-feedback {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #e6f3ff;
+            border-radius: 8px;
+            font-style: italic;
+            color: var(--primary-color);
+        }
+
+        .comparison-summary {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .comparison-chart {
+            margin-top: 1rem;
+            height: 300px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--light-text-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                height: auto;
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">StockSpotter</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search products...">
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-tabs">
+                <div class="sidebar-tab active" data-tab="browse">Browse</div>
+                <div class="sidebar-tab" data-tab="compare">Compare</div>
+            </div>
+            <div id="browse-tab">
+                <div class="category">
+                    <h3>Categories</h3>
+                    <div class="category-item active" data-category="all">All Products</div>
+                    <div class="category-item" data-category="electronics">Electronics</div>
+                    <div class="category-item" data-category="computers">Computers</div>
+                    <div class="category-item" data-category="smart-home">Smart Home</div>
+                    <div class="category-item" data-category="art-craft">Art & Craft</div>
+                    <div class="category-item" data-category="beauty">Beauty & Personal Care</div>
+                    <div class="category-item" data-category="kitchen">Kitchen & Dining</div>
+                    <div class="category-item" data-category="fashion">Fashion</div>
+                </div>
+                <div class="category">
+                    <h3>Malls</h3>
+                    <div class="mall-checkboxes">
+                        <label class="mall-checkbox">
+                            <input type="checkbox" value="all" checked> All Malls
+                        </label>
+                        <label class="mall-checkbox">
+                            <input type="checkbox" value="la-nueva"> La Nueva
+                        </label>
+                        <label class="mall-checkbox">
+                            <input type="checkbox" value="gaisano"> Gaisano Grandmalls
+                        </label>
+                        <label class="mall-checkbox">
+                            <input type="checkbox" value="sm"> SM Supermarket
+                        </label>
+                        <label class="mall-checkbox">
+                            <input type="checkbox" value="robinsons"> Robinsons
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="products-grid">
+                <!-- Products will be dynamically added here -->
+            </div>
+            <div class="compare-page">
+                <div class="compare-form">
+                    <h3 class="compare-title">Compare Prices Across Malls</h3>
+                    <div class="compare-malls">
+                        <label>Select Malls (2-4):</label>
+                        <div class="mall-checkboxes">
+                            <label class="mall-checkbox">
+                                <input type="checkbox" value="la-nueva"> La Nueva
+                            </label>
+                            <label class="mall-checkbox">
+                                <input type="checkbox" value="gaisano"> Gaisano Grandmalls
+                            </label>
+                            <label class="mall-checkbox">
+                                <input type="checkbox" value="sm"> SM Supermarket
+                            </label>
+                            <label class="mall-checkbox">
+                                <input type="checkbox" value="robinsons"> Robinsons
+                            </label>
+                        </div>
+                    </div>
+                    <div class="compare-products">
+                        <label>Select Product:</label>
+                        <select id="compare-product-select"></select>
+                    </div>
+                    <button class="compare-button">Compare Prices</button>
+                </div>
+                <div class="comparison-result"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sample product data
+        const products = [
+            { id: 1, image: 'image1.jpg', title: 'Samsung Galaxy S21', category: 'electronics', prices: { 'la-nueva': 49999.99, 'gaisano': 51999.99, 'sm': 50499.99, 'robinsons': 50999.99 } },
+            { id: 2, image: 'image2.jpg', title: 'Apple MacBook Pro', category: 'computers', prices: { 'la-nueva': 79999.99, 'sm': 81999.99, 'robinsons': 80999.99 } },
+            { id: 3, image: 'image3.jpg', title: 'Amazon Echo Dot', category: 'smart-home', prices: { 'gaisano': 2999.99, 'sm': 2899.99, 'robinsons': 2949.99 } },
+            { id: 4, image: 'image4.jpg', title: 'Faber-Castell Art Set', category: 'art-craft', prices: { 'la-nueva': 1299.99, 'gaisano': 1349.99, 'sm': 1279.99, 'robinsons': 1329.99 } },
+            { id: 5, image: 'image5.jpg', title: 'L\'Oreal Face Cream', category: 'beauty', prices: { 'la-nueva': 799.99, 'sm': 789.99, 'robinsons': 809.99 } },
+            { id: 6, image: 'image6.jpg', title: 'iPad Air', category: 'electronics', prices: { 'la-nueva': 30999.99, 'gaisano': 31999.99, 'robinsons': 31499.99 } },
+            { id: 7, image: 'image7.jpg', title: 'Dell XPS Desktop', category: 'computers', prices: { 'gaisano': 54999.99, 'sm': 55499.99, 'robinsons': 55299.99 } },
+            { id: 8, image: 'image8.webp', title: 'Philips Hue Bulb', category: 'smart-home', prices: { 'la-nueva': 1599.99, 'gaisano': 1649.99, 'sm': 1579.99, 'robinsons': 1619.99 } },
+            { id: 9, image: 'image9.jpg', title: 'Moleskine Sketchbook', category: 'art-craft', prices: { 'gaisano': 899.99, 'sm': 889.99, 'robinsons': 909.99 } },
+            { id: 10, image: 'image10.avif', title: 'Dove Shampoo', category: 'beauty', prices: { 'la-nueva': 199.99, 'gaisano': 219.99, 'sm': 189.99, 'robinsons': 209.99 } },
+            { id: 11, image: 'image11.avif', title: 'Sony 4K TV', category: 'electronics', prices: { 'la-nueva': 39999.99, 'gaisano': 41999.99, 'sm': 40999.99, 'robinsons': 41499.99 } },
+            { id: 12, image: 'image12.jpg', title: 'Lenovo ThinkPad', category: 'computers', prices: { 'la-nueva': 59999.99, 'gaisano': 61999.99, 'robinsons': 60999.99 } },
+            { id: 13, image: 'image13.jpg', title: 'Google Nest Thermostat', category: 'smart-home', prices: { 'gaisano': 11999.99, 'sm': 11499.99, 'robinsons': 11799.99 } },
+            { id: 14, image: 'image14.jpg', title: 'Copic Marker Set', category: 'art-craft', prices: { 'la-nueva': 3999.99, 'sm': 4099.99, 'robinsons': 4049.99 } },
+            { id: 15, image: 'image15.jpg', title: 'Neutrogena Sunscreen', category: 'beauty', prices: { 'la-nueva': 499.99, 'gaisano': 519.99, 'sm': 489.99, 'robinsons': 509.99 } },
+            { id: 16, image: 'image16.webp', title: 'Canon EOS R5', category: 'electronics', prices: { 'la-nueva': 149999.99, 'gaisano': 152999.99, 'sm': 151499.99, 'robinsons': 152499.99 } },
+            { id: 17, image: 'image17.jpg', title: 'ASUS ROG Gaming Laptop', category: 'computers', prices: { 'gaisano': 89999.99, 'sm': 91999.99, 'robinsons': 90999.99 } },
+            { id: 18, image: 'image18.webp', title: 'Ring Video Doorbell', category: 'smart-home', prices: { 'la-nueva': 7999.99, 'sm': 8199.99, 'robinsons': 8099.99 } },
+            { id: 19, image: 'image19.jpg', title: 'Wacom Drawing Tablet', category: 'art-craft', prices: { 'la-nueva': 15999.99, 'gaisano': 16499.99, 'sm': 15799.99, 'robinsons': 16299.99 } },
+            { id: 20, image: 'image20.jpg', title: 'Dyson Hair Dryer', category: 'beauty', prices: { 'gaisano': 19999.99, 'sm': 20499.99, 'robinsons': 20299.99 } },
+            { id: 21, image: 'image21.jpg', title: 'KitchenAid Stand Mixer', category: 'kitchen', prices: { 'la-nueva': 24999.99, 'gaisano': 25999.99, 'sm': 25499.99, 'robinsons': 25799.99 } },
+            { id: 22, image: 'image22.png', title: 'Nike Air Max', category: 'fashion', prices: { 'la-nueva': 5999.99, 'gaisano': 6199.99, 'sm': 5899.99, 'robinsons': 6099.99 } },
+            { id: 23, image: 'image23.jpg', title: 'Instant Pot', category: 'kitchen', prices: { 'gaisano': 4999.99, 'sm': 5199.99, 'robinsons': 5099.99 } },
+            { id: 24, image: 'image24.webp', title: 'Levi\'s 501 Jeans', category: 'fashion', prices: { 'la-nueva': 2999.99, 'sm': 3099.99, 'robinsons': 3049.99 } },
+            { id: 25, image: 'image25.jpg', title: 'Nespresso Coffee Machine', category: 'kitchen', prices: { 'la-nueva': 9999.99, 'gaisano': 10499.99, 'sm': 10299.99, 'robinsons': 10399.99 } },
+        ];
+
+        // Function to render products
+        function renderProducts(category = 'all', selectedMalls = ['all']) {
+            const productsGrid = document.querySelector('.products-grid');
+            let filteredProducts = products;
+            
+            if (category !== 'all') {
+                filteredProducts = filteredProducts.filter(product => product.category === category);
+            }
+            
+            if (!selectedMalls.includes('all')) {
+                filteredProducts = filteredProducts.filter(product => 
+                    selectedMalls.some(mall => product.prices.hasOwnProperty(mall))
+                );
+            }
+            
+            if (filteredProducts.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="no-results">
+                        <p>Oops! It looks like we don't have any products matching your criteria at the moment. Try adjusting your filters or check back later for new arrivals!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsGrid.innerHTML = filteredProducts.map(product => {
+                const availablePrices = selectedMalls.includes('all') 
+                    ? Object.values(product.prices)
+                    : selectedMalls.map(mall => product.prices[mall]).filter(price => price);
+                
+                const averagePrice = availablePrices.reduce((sum, price) => sum + price, 0) / availablePrices.length;
+                
+                return `
+                    <div class="product-card fade-in">
+                        <img src="${product.image}" alt="${product.title}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.title}</h3>
+                            <div class="product-price">₱${averagePrice.toFixed(2)}</div>
+                            <div class="product-actions">
+                                <button class="compare-btn" onclick="addToCompare(${product.id})">Compare</button>
+                                <button class="details-btn" onclick="showProductDetails(${product.id})">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize the page
+        renderProducts();
+
+        // Add event listeners to category items
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                categoryItems.forEach(i => i.classList.remove('active'));
+                e.target.classList.add('active');
+                const selectedMalls = getSelectedMalls();
+                renderProducts(e.target.dataset.category, selectedMalls);
+            });
+        });
+
+        // Function to get selected malls
+        function getSelectedMalls() {
+            const checkboxes = document.querySelectorAll('.mall-checkboxes input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(checkbox => checkbox.value);
+        }
+
+        // Add event listeners to mall checkboxes
+        const mallCheckboxes = document.querySelectorAll('.mall-checkboxes input[type="checkbox"]');
+        mallCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const selectedMalls = getSelectedMalls();
+                const activeCategory = document.querySelector('.category-item.active').dataset.category;
+                renderProducts(activeCategory, selectedMalls);
+            });
+        });
+
+        // Add event listener to search bar
+        const searchBar = document.querySelector('.search-bar input');
+        searchBar.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredProducts = products.filter(product => 
+                product.title.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            renderFilteredProducts(filteredProducts);
+        });
+
+        function renderFilteredProducts(filteredProducts) {
+            const productsGrid = document.querySelector('.products-grid');
+            const selectedMalls = getSelectedMalls();
+            
+            if (filteredProducts.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="no-results">
+                        <p>Oops! We couldn't find any products matching your search. Try different keywords or browse our categories for inspiration!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsGrid.innerHTML = filteredProducts.map(product => {
+                const availablePrices = selectedMalls.includes('all') 
+                    ? Object.values(product.prices)
+                    : selectedMalls.map(mall => product.prices[mall]).filter(price => price);
+                
+                if (availablePrices.length === 0) {
+                    return '';
+                }
+                
+                const averagePrice = availablePrices.reduce((sum, price) => sum + price, 0) / availablePrices.length;
+                
+                return `
+                    <div class="product-card fade-in">
+                        <img src="${product.image}" alt="${product.title}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.title}</h3>
+                            <div class="product-price">₱${averagePrice.toFixed(2)}</div>
+                            <div class="product-actions">
+                                <button class="compare-btn" onclick="addToCompare(${product.id})">Compare</button>
+                                <button class="details-btn" onclick="showProductDetails(${product.id})">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Populate compare product select
+        const compareProductSelect = document.getElementById('compare-product-select');
+        products.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.id;
+            option.textContent = product.title;
+            compareProductSelect.appendChild(option);
+        });
+
+        // Compare functionality
+        const compareButton = document.querySelector('.compare-button');
+        compareButton.addEventListener('click', () => {
+            const selectedMalls = Array.from(document.querySelectorAll('.compare-page .mall-checkboxes input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+            const selectedProductId = document.getElementById('compare-product-select').value;
+            
+            if (selectedMalls.length < 2 || selectedMalls.length > 4) {
+                alert('Please select 2 to 4 malls for comparison.');
+                return;
+            }
+
+            const selectedProduct = products.find(product => product.id === parseInt(selectedProductId));
+            if (!selectedProduct) {
+                alert('Please select a product for comparison.');
+                return;
+            }
+
+            const comparisonResult = document.querySelector('.comparison-result');
+            let resultHTML = `<h4>${selectedProduct.title}</h4>`;
+
+            const availablePrices = [];
+            selectedMalls.forEach(mall => {
+                if (selectedProduct.prices[mall]) {
+                    availablePrices.push(selectedProduct.prices[mall]);
+                    resultHTML += `
+                        <div class="comparison-item">
+                            <span class="comparison-mall">${mall}</span>
+                            <span class="comparison-price">₱${selectedProduct.prices[mall].toFixed(2)}</span>
+                        </div>
+                    `;
+                } else {
+                    resultHTML += `
+                        <div class="comparison-item">
+                            <span class="comparison-mall">${mall}</span>
+                            <span class="comparison-price">Not available</span>
+                        </div>
+                    `;
+                }
+            });
+
+            // Find the cheapest and most expensive prices
+            const cheapestPrice = Math.min(...availablePrices);
+            const mostExpensivePrice = Math.max(...availablePrices);
+            const averagePrice = availablePrices.reduce((sum, price) => sum + price, 0) / availablePrices.length;
+
+            // Add comparison feedback
+            resultHTML += '<div class="comparison-feedback">';
+            selectedMalls.forEach(mall => {
+                if (selectedProduct.prices[mall]) {
+                    if (selectedProduct.prices[mall] === cheapestPrice) {
+                        resultHTML += `<p><strong>${mall}</strong> offers the best deal! You can save up to ₱${(mostExpensivePrice - cheapestPrice).toFixed(2)} by shopping here.</p>`;
+                    } else if (selectedProduct.prices[mall] === mostExpensivePrice) {
+                        resultHTML += `<p><strong>${mall}</strong> has the highest price. You might want to consider other options to save money.</p>`;
+                    } else {
+                        const priceDifference = selectedProduct.prices[mall] - cheapestPrice;
+                        resultHTML += `<p><strong>${mall}</strong> is ₱${priceDifference.toFixed(2)} more expensive than the cheapest option. It might be worth checking out other malls for better deals.</p>`;
+                    }
+                }
+            });
+            resultHTML += '</div>';
+
+            // Add comparison summary
+            resultHTML += `
+                <div class="comparison-summary">
+                    <p>Price Range: ₱${cheapestPrice.toFixed(2)} - ₱${mostExpensivePrice.toFixed(2)}</p>
+                    <p>Average Price: ₱${averagePrice.toFixed(2)}</p>
+                    <p>Potential Savings: Up to ₱${(mostExpensivePrice - cheapestPrice).toFixed(2)}</p>
+                </div>
+            `;
+
+            // Add price comparison chart
+            resultHTML += '<div class="comparison-chart"><canvas id="priceChart"></canvas></div>';
+
+            comparisonResult.innerHTML = resultHTML;
+
+            // Create price comparison chart
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: selectedMalls.filter(mall => selectedProduct.prices[mall]),
+                    datasets: [{
+                        label: 'Price (₱)',
+                        data: selectedMalls.filter(mall => selectedProduct.prices[mall]).map(mall => selectedProduct.prices[mall]),
+                        backgroundColor: 'rgba(26, 115, 232, 0.6)',
+                        borderColor: 'rgba(26, 115, 232, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Price (₱)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            comparisonResult.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Add event listeners to sidebar tabs
+        const sidebarTabs = document.querySelectorAll('.sidebar-tab');
+        const browseTab = document.getElementById('browse-tab');
+        const comparePage = document.querySelector('.compare-page');
+        const productsGrid = document.querySelector('.products-grid');
+
+        sidebarTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                sidebarTabs.forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+
+                if (e.target.dataset.tab === 'browse') {
+                    browseTab.style.display = 'block';
+                    comparePage.classList.remove('active');
+                    productsGrid.style.display = 'grid';
+                } else if (e.target.dataset.tab === 'compare') {
+                    browseTab.style.display = 'none';
+                    comparePage.classList.add('active');
+                    productsGrid.style.display = 'none';
+                }
+            });
+        });
+
+        // Function to add product to compare
+        function addToCompare(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                document.getElementById('compare-product-select').value = productId;
+                document.querySelector('.sidebar-tab[data-tab="compare"]').click();
+                document.querySelector('.comparison-result').innerHTML = '';
+                document.querySelector('.compare-button').click();
+            }
+        }
+
+        // Function to show product details
+        function showProductDetails(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const detailsHTML = `
+                    <h2>${product.title}</h2>
+                    <img src="${product.image}" alt="${product.title}" style="max-width: 200px;">
+                    <p>Category: ${product.category}</p>
+                    <h3>Prices:</h3>
+                    <ul>
+                        ${Object.entries(product.prices).map(([mall, price]) => `<li>${mall}: ₱${price.toFixed(2)}</li>`).join('')}
+                    </ul>
+                `;
+                
+                const modal = document.createElement('div');
+                modal.classList.add('modal');
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        ${detailsHTML}
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                modal.style.display = 'block';
+                
+                const closeBtn = modal.querySelector('.close');
+                closeBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                    document.body.removeChild(modal);
+                });
+                
+                window.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                        document.body.removeChild(modal);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

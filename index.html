@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSpotter - Retail Stock Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4361ee 0%, #ffffff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1573280528665-5a7f0e1d3f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .navbar {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards 1s;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #f0f0f0;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            background: #ef4444;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: #dc2626;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            text-align: center;
+            width: 200px;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards 1.5s;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature i {
+            font-size: 2.5rem;
+            color: #4361ee;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        .social-demo {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-demo h2 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            color: #ffffff;
+            font-size: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #4361ee;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-image"></div>
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="StockSpotter.jpg" alt="StockSpotter Logo">
+            </div>
+            <div class="brand-name">StockSpotter</div>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <h1>Discover Retail Stock Opportunities</h1>
+        <p>Search and analyze stocks from malls, retail chains, and e-commerce giants.<br>Make informed investment decisions.</p>
+        <a href="SS.html" class="cta-button">USE STOCKSPOTTER NOW</a>
+        
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-chart-line"></i>
+                <h3>Real-time Data</h3>
+                <p>Get up-to-the-minute stock prices and market data.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-store"></i>
+                <h3>Retail Focus</h3>
+                <p>Specialized insights for retail and e-commerce stocks.</p>
+            </div>
+        </div>
+
+        <div class="social-demo">
+            <h2>Connect with StockSpotter</h2>
+            <div class="social-icons">
+                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Add hover effect to CTA button
+        const ctaButton = document.querySelector('.cta-button');
+        ctaButton.addEventListener('mouseover', () => {
+            ctaButton.style.transform = 'translateY(-5px)';
+            ctaButton.style.boxShadow = '0 6px 8px rgba(0, 0, 0, 0.15)';
+        });
+        ctaButton.addEventListener('mouseout', () => {
+            ctaButton.style.transform = 'translateY(0)';
+            ctaButton.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        });
+
+        // Add parallax effect to background image
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.pageYOffset;
+            document.querySelector('.background-image').style.transform = `translateY(${scrollPosition * 0.5}px)`;
+        });
+
+        // Add animation to features on scroll
+        const features = document.querySelectorAll('.feature');
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        features.forEach(feature => {
+            observer.observe(feature);
+        });
+    </script>
+</body>
+</html>
