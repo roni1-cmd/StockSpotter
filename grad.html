@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Letters</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e6effa 0%, #c3dafe 100%);
+            color: #1e3a8a;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: linear-gradient(rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.98)), url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Cfilter id="crumple"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise"/%3E%3CfeDisplacementMap in="SourceGraphic" in2="noise" scale="10"/%3E%3C/filter%3E%3Crect width="400" height="400" fill="%23f5f5f5" filter="url(%23crumple)"/%3E%3C/svg%3E');
+            border-radius: 25px;
+            width: 90%;
+            max-width: 900px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
+            border: 3px solid #1e3a8a;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 25px;
+            border: 4px solid transparent;
+            border-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20"%3E%3Cpath d="M0,0 L20,0 L18,2 L20,5 L18,8 L20,10 L18,12 L20,15 L18,18 L20,20 L0,20 L2,18 L0,15 L2,12 L0,10 L2,8 L0,5 L2,2 Z" fill="none" stroke="%231e3a8a" stroke-width="1"/%3E%3C/svg%3E') 10 stretch;
+            pointer-events: none;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 14px 20px;
+            background-color: #1e3a8a;
+            color: #facc15;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-radius: 30px;
+            font-weight: 600;
+            min-width: 120px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tab:hover, .tab.active {
+            background-color: #facc15;
+            color: #1e3a8a;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+        }
+        .tab-content {
+            display: none;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 2px solid #1e3a8a;
+            max-height: 500px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #1e3a8a #f0f4f8;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .letter {
+            line-height: 1.8;
+            padding: 25px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #1e3a8a;
+            font-size: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .letter p:first-child {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .letter p:last-child {
+            margin-top: 20px;
+            font-style: italic;
+        }
+        .password-prompt {
+            display: none;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        input[type="password"] {
+            padding: 12px 20px;
+            width: 100%;
+            max-width: 350px;
+            border: 2px solid #1e3a8a;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        input[type="password"]:focus {
+            border-color: #facc15;
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
+            outline: none;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #1e3a8a;
+            color: #facc15;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            margin-left: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            background-color: #facc15;
+            color: #1e3a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+        }
+        .error {
+            color: #d32f2f;
+            display: none;
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0f4f8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #facc15;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab" data-tab="joemelle">Joemelle</div>
+            <div class="tab" data-tab="philip">Philip</div>
+            <div class="tab" data-tab="adellaine">Adellaine</div>
+            <div class="tab" data-tab="jesry">Jesry</div>
+            <div class="tab" data-tab="precious">Precious</div>
+        </div>
+        <div class="password-prompt" id="password-prompt">
+            <input type="password" id="password-input" placeholder="Enter password">
+            <button onclick="checkPassword()">Unlock</button>
+            <div class="error" id="error-message">Incorrect password. Please try again.</div>
+        </div>
+        <div class="tab-content" id="joemelle">
+            <div class="letter">
+                <p>Hi Joemelle,</p>
+                <p>I remembered just before the first time we met, during our initial practice for the DSPC. I had no idea who you were, what your personality was like, or what you were capable of. You were with Hesly back then, and I still chuckle thinking about it—our English Broadcasting Team days were something else! It wasn’t until October 12 or 18, when we spent a whole day together, that things clicked. I remember you thought I was being distant, but honestly, I was just shy since I didn’t know you yet. That day, Rachel said I was “pamaymay” but in a good way, apparently. That might’ve been the spark of our friendship. We got to know each other well during DSPC practices, training every day, and yeah, I might’ve nagged you a bit (sorry!), but you never seemed to mind. Every afternoon, we’d talk for hours about all sorts of things—that’s when I really got to know you and the others. You were there for me when my knees were killing me, especially during the actual DSPC event. Melle, I’m so happy to have you all in my life. My love for you guys is equal, and I’ve always got your back, just like you had mine when I needed it most. Our shared memories—from DSPC to now—are treasures I hold dear. Sometimes, the most important things go unsaid between friends, so I didn’t want another day to pass without telling you how much your friendship means to me. You’ve made my life richer in so many ways, and I’m a better person because of you.</p>
+                <p>Thank you for being you and for letting me be part of your journey. You’ve celebrated my wins without jealousy, supported me through struggles without judgment, and accepted me, flaws and all. The world feels brighter and kinder with you in it, and I’m so grateful our paths crossed. No matter where life takes us, you’ll always have a special place in my heart. Your friendship is one of my greatest blessings.</p>
+                <p>Sincerely,<br>Roni!!</p>
+            </div>
+        </div>
+        <div class="tab-content" id="philip">
+            <div class="letter">
+                <p>Dear Koya Pelep,</p>
+                <p>Hey Kuys! I think we really bonded during Intrams, especially when we went to Silakview with Joemelle. Those were exhausting days, walking back home together, crossing that bridge with Ade, Joemelle, David, and Precious. I still laugh thinking about when you forgot your tripod, and the store closed on you—thankfully, you got it back the next day! When someone opened up, you were quiet, but I want you to know we’re here for you. You can always share with us; we’ll never leave you feeling left out—that’s a promise. Kuys, I’m so proud of everything you’ve achieved. Your effort, your success—it’s inspiring to see you accomplish something you’ve worked so hard for. I admire your drive to achieve, even when it means sacrificing something valuable. That determination is something special. Thank you for being you and for letting me be your friend. It’s a privilege I don’t take lightly.</p>
+                <p>Best regards,<br>Roni</p>
+            </div>
+        </div>
+        <div class="tab-content" id="adellaine">
+            <div class="letter">
+                <p>Dear Adellaine,</p>
+                <p>Hi Ade :^3, one of my dearest friends and my partner-in-crime. You’ve been there when I needed someone most. I first got to know you during Intrams (and DSPC), though I didn’t know much about anyone back then. When you shared your insights and perspectives, I realized you were different from anyone I’d met. That was the start of our beautiful friendship, and I truly mean that. I value you all as much as I value myself, and I want to give you the love and respect you deserve. After that, we’d hang out every afternoon with Philip, Joemelle, and Precious, often grabbing isaw and bonding. Ade, you’ve seen me at my lowest, like when I broke down in tears because things got heavy. You didn’t turn away—you were there, lifting me up, and I love that about you. That’s when I knew you all were different, like gems I could trust. I don’t trust easily, but you showed me I could rely on you. You’ve supported me, even with a bit of sarcasm (but the good kind!). From that moment, I promised myself I’d be there for you, no matter what. I admire your practical thinking—how you approach life and tasks with efficiency and enthusiasm, even if you grumble a bit (it’s cute, honestly). When I say I’ll help you with anything, I mean it. I don’t want you to ever feel alone in your battles. You’re strong, Ade, but we’re here for you too, ready to support you if you want to be vulnerable. Congrats on everything you’ve achieved—you absolutely deserve it. I’m proud of what you’ve done and what you’ll do. I believe in your capabilities, and nothing is impossible for you. Whatever you aim for, we’ll be praying for you to get it. Also, thank you so much for the letter you gave me—it touched me deeply. It’s rare for me to receive something so heartfelt, and it means the world. I hope our paths cross again, and we won’t be strangers when they do. I’m one call away, Ade. Trust the process. Love you!!</p>
+                <p>Warm regards,<br>Roni</p>
+            </div>
+        </div>
+        <div class="tab-content" id="jesry">
+            <div class="letter">
+                <p>Dear Jesry,</p>
+                <p>Hi Damm, my assistant! Haha, the first time I met you, your bubbly energy stood out. You’re so good at connecting with people. I remember during Intrams, when we were working on the balak, you opened up about personal stuff at home. I was shocked because it was so personal, but I was honored you felt comfortable sharing with me. Beyond congratulating you on your achievements, I want to thank you for letting me be part of your life during this transformative time. Our friendship is one of the greatest gifts I’ve received. I’m excited to see what you’ll accomplish next, knowing you’ll tackle it with the same excellence and heart. Even if we end up in different places, my support and friendship will always be with you. Remember our talks about what we want from life? I still believe in every word, and I can’t wait to see those dreams come true in ways even better than we imagined.</p>
+                <p>Yours truly,<br>Rons</p>
+            </div>
+        </div>
+        <div class="tab-content" id="precious">
+            <div class="letter">
+                <p>Dear Precious,</p>
+                <p>Hi Ateee!!! You’re so sweet, always ready to give me a big hug whenever we meet, and I absolutely love it. Your hyper energy is contagious, and it makes me smile every time. I’m so happy when you open up to me—it shows you trust me, and that means a lot. What’s amazing isn’t just what you’ve achieved (though that’s impressive!) but how you’ve done it. You chose integrity over shortcuts and collaboration over competition. I love how you always push for us to team up rather than go it alone. I’ve seen you grow from uncertainty to being so practical and strong, turning challenges into strengths. I promise to be your cheerleader as you explore new paths, celebrating your wins and offering support when things get tough. My wish for you is a future filled with challenges that match your potential, joys that reflect your heart, and relationships as authentic as you are. Our shared moments—laughing together, making ordinary days special—are treasures to me. Your laughter lights up any room, and I always leave your company feeling inspired and understood.</p>
+                <p>With appreciation,<br>Roniiii</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const passwords = {
+            joemelle: 'joemelle_broadcasting',
+            philip: 'philip_dspc',
+            adellaine: 'ade_intrams',
+            jesry: 'jesry_intrams',
+            precious: 'precious_intrams'
+        };
+        let currentTab = null;
+
+        // Tab switching logic
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentTab = tab.getAttribute('data-tab');
+                document.getElementById('password-prompt').style.display = 'block';
+                document.getElementById('password-input').value = '';
+                document.getElementById('error-message').style.display = 'none';
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+            });
+        });
+
+        // Password check
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            if (input === passwords[currentTab]) {
+                document.getElementById('password-prompt').style.display = 'none';
+                document.getElementById(currentTab).classList.add('active');
+                document.querySelector(`.tab[data-tab="${currentTab}"]`).classList.add('active');
+                document.getElementById('error-message').style.display = 'none';
+                // Trigger scroll animation for the active letter
+                gsap.to(`#${currentTab} .letter`, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: `#${currentTab} .letter`,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            } else {
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        // Enter key support for password input
+        document.getElementById('password-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+</html>
